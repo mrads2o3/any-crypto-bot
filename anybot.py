@@ -1,4 +1,5 @@
 import __bot__.faucet.mangofaucet as mangofaucet
+import __bot__.swap.perena.perenaNumeraire as perenaNumeraire
 
 def faucet_menu():
     print("1. Mango faucet")
@@ -20,13 +21,21 @@ def faucet_menu():
     else:
         print("Invalid input!")
 
+def swap_menu():
+    # print("1. Perena Numerarire")
+    print("No Bot Available")
+    return
+
 def main_menu():
     print("============= Anybot Menu =============")
     print("1. Bot faucet")
+    print("2. Bot swap")
     choice = input("Choice bot type: ")
     
     if choice == "1":
         faucet_menu()
+    if choice == "2":
+        swap_menu()
 
 if __name__ == "__main__":
     main_menu()
