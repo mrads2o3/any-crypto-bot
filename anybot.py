@@ -23,9 +23,9 @@ def main_menu():
         mangofaucet.mangoFaucet(env, address)
     elif faucet_choice == "2":
         userid = input("Please input user id : ")
-        token = input("Please input token : ")
+        # token = input("Please input token : ")
         print(f'Lets run with user id {userid}')
-        fraction.fraction(token, userid)
+        fraction.fraction(userid)
     else:
         print("Invalid input!")
         

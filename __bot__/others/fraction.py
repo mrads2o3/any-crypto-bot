@@ -4,23 +4,23 @@ import requests
 from datetime import datetime
 import math
 
-def fraction(token, userid):
+def fraction(userid):
     while True:
         try:
             # Get user agents
             agentUrl = f"https://dapp-backend-large.fractionai.xyz/api2/agents/user/{userid}"
             agentHeaders = {
                 'Accept': 'application/json',
-                'Authorization': f'Bearer {token}',
+                'Authorization': f'Bearer 1234', # idk hit this endpoint don't need True token but site send Auth 
                 'Origin': 'https://dapp.fractionai.xyz',
                 'Referer': 'https://dapp.fractionai.xyz/'
             }
             ##############################################
             print("Getting agent.....")
             response = requests.get(agentUrl, headers=agentHeaders)
-            if response.status_code == 403:
-                token = input('Token Expired, please input new token: ')
-            elif response.status_code != 200:
+            # if response.status_code == 403:
+            #     token = input('Token Expired, please input new token: ')
+            if response.status_code != 200:
                 print(f'Error {response.status_code}, run bot again')
                 break
             elif response.status_code == 200:
@@ -29,7 +29,7 @@ def fraction(token, userid):
                 
                 if not agent:
                     userid = input('No agent found, please input new user ID: ')
-                    token = input('No agent found, please input new token: ')
+                    # token = input('No agent found, please input new token: ')
                 else:
                     sumAgent = len(agent)
                     timePerAgent = math.ceil(1200 / sumAgent)
@@ -42,7 +42,7 @@ def fraction(token, userid):
                             initiateUrl = "https://dapp-backend-large.fractionai.xyz/api2/matchmaking/initiate"
                             initiateHeader = {
                                 'Accept': 'application/json',
-                                'Authorization': f'Bearer {token}',
+                                # 'Authorization': f'Bearer {token}',
                                 'Origin': 'https://dapp.fractionai.xyz',
                                 'Referer': 'https://dapp.fractionai.xyz/'
                             }
