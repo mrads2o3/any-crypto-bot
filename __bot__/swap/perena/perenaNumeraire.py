@@ -1,7 +1,7 @@
 from solana.rpc.async_api import AsyncClient
-from solders.pubkey import Pubkey
+from solders.pubkey import Pubkey # type: ignore
 from solana.transaction import Transaction
-from solders.keypair import Keypair
+from solders.keypair import Keypair # type: ignore
 from solana.rpc.types import TxOpts
 from anchorpy import Program, Context, Idl
 import base64
