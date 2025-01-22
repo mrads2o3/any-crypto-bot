@@ -1,6 +1,8 @@
 # Auto initiate fraction AI bot
 import time
 import requests
+from datetime import datetime
+import math
 
 def fraction(token, userid):
     while True:
@@ -17,7 +19,6 @@ def fraction(token, userid):
             print("Getting agent.....")
             response = requests.get(agentUrl, headers=agentHeaders)
             if response.status_code == 403:
-                userid = input('Token Expired, please input new user ID: ')
                 token = input('Token Expired, please input new token: ')
             elif response.status_code != 200:
                 print(f'Error {response.status_code}, run bot again')
@@ -30,6 +31,11 @@ def fraction(token, userid):
                     userid = input('No agent found, please input new user ID: ')
                     token = input('No agent found, please input new token: ')
                 else:
+                    sumAgent = len(agent)
+                    timePerAgent = math.ceil(1200 / sumAgent)
+                    sleepTime = 1210
+                    print(f"You have {sumAgent} agent.")
+                    print(f"Start run initiation every {timePerAgent} seconds.")
                     for data in agent:
                         if data.get('automationEnabled') == False:
                             # initiate
@@ -51,18 +57,27 @@ def fraction(token, userid):
                             initiate = requests.post(initiateUrl, headers=initiateHeader, json=initiateBody)
                             if initiate.status_code == 200:
                                 resp = initiate.json()
-                                print(f"Initiate agent ID {data.get('id')} success")
-                                print(f"Matchmaking ID: {resp.get('matchmakingId')}")
-                                print(f"Matchmaking Status: {resp.get('matchmakingStatus')}")
+                                print("-----------------------------")
+                                print(f"+ Initiate agent ID {data.get('id')} success")
+                                print(f"+ Matchmaking ID: {resp.get('matchmakingId')}")
+                                print(f"+ Matchmaking Status: {resp.get('matchmakingStatus')}")
+                                currentTime = datetime.now()
+                                formattedTime = currentTime.strftime("%Y-%m-%d %H:%M:%S")
+                                print(f"+ Initiate date : {formattedTime}")
+                                sleepTime = sleepTime - timePerAgent
+                                print(f"Waiting {timePerAgent} second...")
+                                time.sleep(timePerAgent)
                             else:
                                 print(f"Error initiating agent ID {data.get('id')}, skipping to the next one.")
                         else:
-                            print(f"Agent ID {data.get('id')} is already automated, skipping.")
+                            print(f"Agent ID {data.get('id')} is already automated, skipping....")
 
-                    print('All complete, sleeping for 21 minutes...')
-                    
-                    for m in range(21, 0, -1):
-                        print(f"{m} minute left")
-                        time.sleep(60)
+                    print('All initiate complete.')
+                    print(f'Wait for {sleepTime} second')
+                    waitTimes = math.ceil(sleepTime / 5)
+                    for m in range(sleepTime, 0, -(waitTimes)):
+                        print(f"{m} second left")
+                        time.sleep(waitTimes)
+
         except Exception as e:
             print(f"Error occurred, restarting bot: {e}")

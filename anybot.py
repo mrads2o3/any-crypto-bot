@@ -6,7 +6,7 @@ def main_menu():
     print("============= Anybot Menu =============")
     print("1. Mango faucet")
     print("2. Fraction initiate")
-    faucet_choice = input("Choice bot faucet:")
+    faucet_choice = input("Choice bot faucet : ")
 
     if faucet_choice == "1":
         env_choice = input("ENV (1 Devnet, 2 Testnet): ")
@@ -22,8 +22,8 @@ def main_menu():
         address = input("Address: ")
         mangofaucet.mangoFaucet(env, address)
     elif faucet_choice == "2":
-        userid = input("Please input user id :")
-        token = input("Please input token :")
+        userid = input("Please input user id : ")
+        token = input("Please input token : ")
         print(f'Lets run with user id {userid}')
         fraction.fraction(token, userid)
     else:
