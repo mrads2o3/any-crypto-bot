@@ -6,7 +6,7 @@ def fraction(token, userid):
     while True:
         try:
             # Get user agents
-            agentUrl = f"https://neural-arena-backend.fractionai.xyz/api2/agents/user/{userid}"
+            agentUrl = f"https://dapp-backend-large.fractionai.xyz/api2/agents/user/{userid}"
             agentHeaders = {
                 'Accept': 'application/json',
                 'Authorization': f'Bearer {token}',
@@ -33,7 +33,7 @@ def fraction(token, userid):
                     for data in agent:
                         if data.get('automationEnabled') == False:
                             # initiate
-                            initiateUrl = "https://neural-arena-backend.fractionai.xyz/api2/matchmaking/initiate"
+                            initiateUrl = "https://dapp-backend-large.fractionai.xyz/api2/matchmaking/initiate"
                             initiateHeader = {
                                 'Accept': 'application/json',
                                 'Authorization': f'Bearer {token}',
@@ -60,6 +60,9 @@ def fraction(token, userid):
                             print(f"Agent ID {data.get('id')} is already automated, skipping.")
 
                     print('All complete, sleeping for 21 minutes...')
-                    time.sleep(1260)  # 21 minutes
+                    
+                    for m in range(21, -1, -1):
+                        time.sleep(60)
+                        print(f"{m} minute left")
         except Exception as e:
             print(f"Error occurred, restarting bot: {e}")
