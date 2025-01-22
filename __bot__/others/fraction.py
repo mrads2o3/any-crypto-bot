@@ -61,8 +61,8 @@ def fraction(token, userid):
 
                     print('All complete, sleeping for 21 minutes...')
                     
-                    for m in range(21, -1, -1):
-                        time.sleep(60)
+                    for m in range(21, 0, -1):
                         print(f"{m} minute left")
+                        time.sleep(60)
         except Exception as e:
             print(f"Error occurred, restarting bot: {e}")
