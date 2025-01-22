@@ -1,7 +1,11 @@
 import __bot__.faucet.mangofaucet as mangofaucet
+# import __bot__.swap.perena.perenaNumeraire as perenaNumeraire
+import __bot__.others.fraction as fraction
 
-def faucet_menu():
+def main_menu():
+    print("============= Anybot Menu =============")
     print("1. Mango faucet")
+    print("2. Fraction initiate")
     faucet_choice = input("Choice bot faucet:")
 
     if faucet_choice == "1":
@@ -17,16 +21,13 @@ def faucet_menu():
             
         address = input("Address: ")
         mangofaucet.mangoFaucet(env, address)
+    elif faucet_choice == "2":
+        userid = input("Please input user id :")
+        token = input("Please input token :")
+        print(f'Lets run with user id {userid}')
+        fraction.fraction(token, userid)
     else:
         print("Invalid input!")
-
-def main_menu():
-    print("============= Anybot Menu =============")
-    print("1. Bot faucet")
-    choice = input("Choice bot type: ")
-    
-    if choice == "1":
-        faucet_menu()
-
+        
 if __name__ == "__main__":
     main_menu()
