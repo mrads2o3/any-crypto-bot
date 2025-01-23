@@ -81,3 +81,22 @@ def fraction(userid):
 
         except Exception as e:
             print(f"Error occurred, restarting bot: {e}")
+
+def checkUserId(sessionId):
+    url = f"https://dapp-backend-large.fractionai.xyz/api2/session-messages/session/{sessionId}"
+    header = {
+        'Accept': 'application/json',
+        'Origin': 'https://dapp.fractionai.xyz',
+        'Referer': 'https://dapp.fractionai.xyz/'
+    }
+
+    response = requests.get(url, headers=header)
+    res = response.json()
+    usr = res.get('participantScores')
+    for user in usr:
+        print("-----------------------------")
+        print(f"+ Agent ID   : {user.get('agentId')}")
+        print(f"+ User ID    : {user.get('userId')}")
+        print(f"+ Agent Name : {user.get('agentName')}")
+        print(f"+ Score      : {user.get('score')}")
+        print(f"+ Rank       : {user.get('rank')}")
