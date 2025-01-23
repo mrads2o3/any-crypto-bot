@@ -18,13 +18,15 @@ def fraction(token, userid):
             ##############################################
             print("Getting agent.....")
             response = requests.get(agentUrl, headers=agentHeaders)
+            agent = response.json()
             if response.status_code == 401:
                 token = input('Token Expired, please input new token: ')
-            if response.status_code != 200:
+            elif response.status_code == 400:
+                print(agent.get('error'))
+            elif response.status_code != 200:
                 print(f'Error {response.status_code}, run bot again')
                 break
             elif response.status_code == 200:
-                agent = response.json()
                 print('Success get agent!!!')
                 
                 if not agent:
@@ -55,8 +57,8 @@ def fraction(token, userid):
                             ##############################################
 
                             initiate = requests.post(initiateUrl, headers=initiateHeader, json=initiateBody)
+                            resp = initiate.json()
                             if initiate.status_code == 200:
-                                resp = initiate.json()
                                 print("-----------------------------")
                                 print(f"+ Initiate agent ID {data.get('id')} success")
                                 print(f"+ Matchmaking ID: {resp.get('matchmakingId')}")
@@ -68,9 +70,13 @@ def fraction(token, userid):
                                 print(f"Waiting {timePerAgent} second...")
                                 time.sleep(timePerAgent)
                             else:
-                                print(f"Error initiating agent ID {data.get('id')}, skipping to the next one.")
+                                print("-----------------------------")
+                                print(f"Agent ID   : {data.get('id')}")
+                                print(f"Agent Name : {data.get('name')}")
+                                print(f'Message    : {resp}')
                         else:
-                            print(f"Agent ID {data.get('id')} is already automated, skipping....")
+                            print("-----------------------------")
+                            print(f"Agent {data.get('name')} is already automated, skipping....")
 
                     print('All initiate complete.')
                     print(f'Wait for {sleepTime} second')
@@ -80,7 +86,7 @@ def fraction(token, userid):
                         time.sleep(waitTimes)
 
         except Exception as e:
-            print(f"Error occurred, restarting bot: {e}")
+            print(f"Error occurred, stop running bot: {e}")
 
 def checkUserId(sessionId):
     url = f"https://dapp-backend-large.fractionai.xyz/api2/session-messages/session/{sessionId}"
