@@ -9,9 +9,9 @@ def fractionMenu():
     choice = input("Choice menu : ")
     if choice == "1":
         userid = input("Please input user id : ")
-        # token = input("Please input token : ")
+        token = input("Please input token : ")
         print(f'Lets run with user id {userid}')
-        fraction.fraction(userid)
+        fraction.fraction(token, userid)
     elif choice == "2":
         sessionId = input("Please input Battle ID : ")
         print(f'Lets get user id from Battle ID {sessionId}')
