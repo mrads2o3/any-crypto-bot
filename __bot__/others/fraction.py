@@ -4,11 +4,34 @@ import requests
 from datetime import datetime
 import math
 
+def sessionCheck(userid):
+    sessionCheck = True
+    while sessionCheck:
+        sessionUrl = f"https://dapp-backend-large.fractionai.xyz/api3/session-types/live-paginated/user/{userid}?pageSize=10&pageNumber=1"
+        sessionHeader = {
+            'Accept': 'application/json',
+            'Origin': 'https://dapp.fractionai.xyz',
+            'Referer': 'https://dapp.fractionai.xyz/'
+        }
+
+        getSession = requests.get(sessionUrl, headers=sessionHeader)
+        respSession = getSession.json()
+        statusCounts = respSession.get('statusCounts')
+        liveSession = statusCounts.get('live')
+
+        print(f"There's {liveSession} session left")
+        if(liveSession == "0"):
+            sessionCheck = False
+            print(f"Session was free, lets run bot!")
+            time.sleep(10)
+        else:
+            time.sleep(10)
+
 def fraction(token, userid):
     while True:
         try:
             # Get user agents
-            agentUrl = f"https://dapp-backend-large.fractionai.xyz/api2/agents/user/{userid}"
+            agentUrl = f"https://dapp-backend-large.fractionai.xyz/api3/agents/user/{userid}"
             agentHeaders = {
                 'Accept': 'application/json',
                 'Authorization': f'Bearer {token}',
@@ -34,14 +57,11 @@ def fraction(token, userid):
                     token = input('No agent found, please input new token: ')
                 else:
                     sumAgent = len(agent)
-                    timePerAgent = math.ceil(1200 / sumAgent)
-                    sleepTime = 1210
                     print(f"You have {sumAgent} agent.")
-                    print(f"Start run initiation every {timePerAgent} seconds.")
                     for data in agent:
                         if data.get('automationEnabled') == False:
                             # initiate
-                            initiateUrl = "https://dapp-backend-large.fractionai.xyz/api2/matchmaking/initiate"
+                            initiateUrl = "https://dapp-backend-large.fractionai.xyz/api3/matchmaking/initiate"
                             initiateHeader = {
                                 'Accept': 'application/json',
                                 'Authorization': f'Bearer {token}',
@@ -60,27 +80,28 @@ def fraction(token, userid):
                             resp = initiate.json()
                             if initiate.status_code == 200:
                                 print("-----------------------------")
-                                print(f"+ Initiate agent ID {data.get('id')} success")
+                                print(f"+ Initiate agent {data.get('name')} success")
                                 print(f"+ Matchmaking ID: {resp.get('matchmakingId')}")
                                 print(f"+ Matchmaking Status: {resp.get('matchmakingStatus')}")
                                 currentTime = datetime.now()
                                 formattedTime = currentTime.strftime("%Y-%m-%d %H:%M:%S")
                                 print(f"+ Initiate date : {formattedTime}")
-                                sleepTime = sleepTime - timePerAgent
-                                print(f"Waiting {timePerAgent} second...")
-                                time.sleep(timePerAgent)
                             else:
                                 print("-----------------------------")
                                 print(f"Agent ID   : {data.get('id')}")
                                 print(f"Agent Name : {data.get('name')}")
                                 print(f'Message    : {resp}')
+                                if initiate.status_code == 400 and "agents can join sessions at the same time" in resp.get('error', ''):
+                                    print(f"Session full, wait session free again!")
+                                    sessionCheck(userid=userid)
                         else:
                             print("-----------------------------")
                             print(f"Agent {data.get('name')} is already automated, skipping....")
-
-                    print('All initiate complete.')
+                    
+                    sleepTime = 300 # 5 Minutes
+                    print('All agent running complete.')
                     print(f'Wait for {sleepTime} second')
-                    waitTimes = math.ceil(sleepTime / 5)
+                    waitTimes = math.ceil(sleepTime / 3)
                     for m in range(sleepTime, 0, -(waitTimes)):
                         print(f"{m} second left")
                         time.sleep(waitTimes)
