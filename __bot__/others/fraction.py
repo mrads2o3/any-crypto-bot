@@ -23,9 +23,8 @@ def sessionCheck(userid):
         if(liveSession == "0"):
             sessionCheck = False
             print(f"Session was free, lets run bot!")
-            time.sleep(10)
         else:
-            time.sleep(10)
+            time.sleep(60)
 
 def fraction(token, userid):
     while True:
