@@ -15,16 +15,20 @@ def sessionCheck(userid):
         }
 
         getSession = requests.get(sessionUrl, headers=sessionHeader)
-        respSession = getSession.json()
-        statusCounts = respSession.get('statusCounts')
-        liveSession = statusCounts.get('live')
+        if(getSession.status_code == 200):
+            respSession = getSession.json()
+            statusCounts = respSession.get('statusCounts')
+            liveSession = statusCounts.get('live')
 
-        print(f"There's {liveSession} session left")
-        if(liveSession == "0"):
-            sessionCheck = False
-            print(f"Session was free, lets run bot!")
+            print(f"There's {liveSession} session left")
+            if(liveSession == "0"):
+                sessionCheck = False
+                print(f"Session was free, lets run bot!")
+            else:
+                time.sleep(10)
         else:
-            time.sleep(60)
+            print('Get session failed!')
+            print('Retrying...')
 
 def fraction(token, userid):
     while True:
@@ -74,25 +78,35 @@ def fraction(token, userid):
                                 "sessionTypeId": 1
                             }
                             ##############################################
+                            err_loop = True
+                            while err_loop:
+                                initiate = requests.post(initiateUrl, headers=initiateHeader, json=initiateBody)
+                                resp = initiate.json()
+                                if initiate.status_code == 200:
+                                    print("-----------------------------")
+                                    print(f"+ Initiate agent {data.get('name')} success")
+                                    print(f"+ Matchmaking ID: {resp.get('matchmakingId')}")
+                                    print(f"+ Matchmaking Status: {resp.get('matchmakingStatus')}")
+                                    currentTime = datetime.now()
+                                    formattedTime = currentTime.strftime("%Y-%m-%d %H:%M:%S")
+                                    print(f"+ Initiate date : {formattedTime}")
+                                    err_loop = False
+                                else:
+                                    err_msg = resp.get('error', '')
+                                    print("-----------------------------")
+                                    print(f"Agent ID   : {data.get('id')}")
+                                    print(f"Agent Name : {data.get('name')}")
+                                    print(f"Status     : {initiate.status_code}")
+                                    print(f'Message    : {err_msg}')
+                                    if initiate.status_code == 400 and "Agent is in cooldown period" in err_msg:
+                                        print("Initiate next agent...")
+                                        err_loop = False
+                                    elif initiate.status_code == 400 and "agents can join sessions at the same time" in err_msg:
+                                        print(f"Session full, wait session free again...")
+                                        sessionCheck(userid=userid)
+                                    elif "timeout" in err_msg:
+                                        print("Timeout! Retrying to initiate...")
 
-                            initiate = requests.post(initiateUrl, headers=initiateHeader, json=initiateBody)
-                            resp = initiate.json()
-                            if initiate.status_code == 200:
-                                print("-----------------------------")
-                                print(f"+ Initiate agent {data.get('name')} success")
-                                print(f"+ Matchmaking ID: {resp.get('matchmakingId')}")
-                                print(f"+ Matchmaking Status: {resp.get('matchmakingStatus')}")
-                                currentTime = datetime.now()
-                                formattedTime = currentTime.strftime("%Y-%m-%d %H:%M:%S")
-                                print(f"+ Initiate date : {formattedTime}")
-                            else:
-                                print("-----------------------------")
-                                print(f"Agent ID   : {data.get('id')}")
-                                print(f"Agent Name : {data.get('name')}")
-                                print(f'Message    : {resp}')
-                                if initiate.status_code == 400 and "agents can join sessions at the same time" in resp.get('error', ''):
-                                    print(f"Session full, wait session free again!")
-                                    sessionCheck(userid=userid)
                         else:
                             print("-----------------------------")
                             print(f"Agent {data.get('name')} is already automated, skipping....")
