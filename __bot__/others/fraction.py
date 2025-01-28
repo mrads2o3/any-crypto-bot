@@ -19,16 +19,24 @@ def sessionCheck(userid):
             respSession = getSession.json()
             statusCounts = respSession.get('statusCounts')
             liveSession = statusCounts.get('live')
-
-            print(f"There's {liveSession} session left")
-            if(liveSession == "0"):
+            distributing = statusCounts.get('distributing_rewards')
+            currentTime = datetime.now()
+            formattedTime = currentTime.strftime("%Y-%m-%d %H:%M:%S")
+            print("------ Session Status ------")
+            print(f"+ Live         : {liveSession}")
+            print(f"+ Distributing : {distributing}")
+            print(f"+ Time         : {formattedTime}")
+            if(liveSession == "0" and distributing == "0"):
                 sessionCheck = False
                 print(f"Session was free, lets run bot!")
+                time.sleep(10)
             else:
                 time.sleep(10)
         else:
             print('Get session failed!')
             print('Retrying...')
+            time.sleep(10)
+
 
 def fraction(token, userid):
     while True:
@@ -49,18 +57,21 @@ def fraction(token, userid):
                 token = input('Token Expired, please input new token: ')
             elif response.status_code == 400:
                 print(agent.get('error'))
+                time.sleep(10)
             elif response.status_code != 200:
                 print(f'Error {response.status_code}, run bot again')
+                time.sleep(10)
                 break
             elif response.status_code == 200:
                 print('Success get agent!!!')
-                
+
                 if not agent:
                     userid = input('No agent found, please input new user ID: ')
                     token = input('No agent found, please input new token: ')
                 else:
                     sumAgent = len(agent)
                     print(f"You have {sumAgent} agent.")
+                    time.sleep(10)
                     for data in agent:
                         if data.get('automationEnabled') == False:
                             # initiate
@@ -91,6 +102,7 @@ def fraction(token, userid):
                                     formattedTime = currentTime.strftime("%Y-%m-%d %H:%M:%S")
                                     print(f"+ Initiate date : {formattedTime}")
                                     err_loop = False
+                                    time.sleep(10)
                                 else:
                                     err_msg = resp.get('error', '')
                                     print("-----------------------------")
@@ -101,15 +113,20 @@ def fraction(token, userid):
                                     if initiate.status_code == 400 and "Agent is in cooldown period" in err_msg:
                                         print("Initiate next agent...")
                                         err_loop = False
+                                        time.sleep(10)
                                     elif initiate.status_code == 400 and "agents can join sessions at the same time" in err_msg:
                                         print(f"Session full, wait session free again...")
+                                        err_loop = False
+                                        time.sleep(10)
                                         sessionCheck(userid=userid)
                                     elif "timeout" in err_msg:
                                         print("Timeout! Retrying to initiate...")
+                                        time.sleep(10)
 
                         else:
                             print("-----------------------------")
                             print(f"Agent {data.get('name')} is already automated, skipping....")
+                            time.sleep(10)
                     
                     sleepTime = 300 # 5 Minutes
                     print('All agent running complete.')
