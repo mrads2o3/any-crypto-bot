@@ -85,7 +85,7 @@ def fraction(token, userid):
                             initiateBody = {
                                 "userId": userid,
                                 "agentId": data.get('id'),
-                                "entryFees": 0.0001,
+                                "entryFees": 0.001,
                                 "sessionTypeId": 1
                             }
                             ##############################################
@@ -120,6 +120,9 @@ def fraction(token, userid):
                                         sessionCheck(userid=userid)
                                     elif "timeout" in err_msg:
                                         print("Timeout! Retrying to initiate...")
+                                        time.sleep(10)
+                                    else:
+                                        err_loop = False
                                         time.sleep(10)
 
                         else:
