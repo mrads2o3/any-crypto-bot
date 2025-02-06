@@ -37,6 +37,13 @@ def sessionCheck(userid):
             print('Retrying...')
             time.sleep(10)
 
+def waitCountDown(sleepTime):
+    print(f'Wait for {sleepTime} second')
+    waitTimes = math.ceil(sleepTime / 10)
+    for m in range(sleepTime, 0, -(waitTimes)):
+        print(f"{m} second left")
+        time.sleep(waitTimes)
+
 
 def fraction(token, userid):
     while True:
@@ -114,9 +121,9 @@ def fraction(token, userid):
                                         print("Initiate next agent...")
                                         err_loop = False
                                         time.sleep(10)
-                                    elif initiate.status_code == 400 and "agents can join sessions at the same time" in err_msg:
-                                        print(f"Session full, wait session free again...")
-                                        time.sleep(10)
+                                    elif initiate.status_code == 400 and "please try after 60 minutes" in err_msg:
+                                        print(f"Session full, wait session free again in 1 hour...")
+                                        waitCountDown(3610)
                                         sessionCheck(userid=userid)
                                     elif "timeout" in err_msg:
                                         print("Timeout! Retrying to initiate...")
@@ -130,13 +137,8 @@ def fraction(token, userid):
                             print(f"Agent {data.get('name')} is already automated, skipping....")
                             time.sleep(10)
                     
-                    sleepTime = 300 # 5 Minutes
                     print('All agent running complete.')
-                    print(f'Wait for {sleepTime} second')
-                    waitTimes = math.ceil(sleepTime / 3)
-                    for m in range(sleepTime, 0, -(waitTimes)):
-                        print(f"{m} second left")
-                        time.sleep(waitTimes)
+                    waitCountDown(300)
 
         except Exception as e:
             print(f"Error occurred, stop running bot: {e}")
