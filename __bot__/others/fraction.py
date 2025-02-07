@@ -122,8 +122,8 @@ def fraction(token, userid):
                                         err_loop = False
                                         time.sleep(10)
                                     elif initiate.status_code == 400 and "please try after 60 minutes" in err_msg:
-                                        print(f"Session full, wait session free again in 1 hour...")
-                                        waitCountDown(3610)
+                                        print(f"Session full, getting session in 10 minutes...")
+                                        waitCountDown(600)
                                         sessionCheck(userid=userid)
                                     elif "timeout" in err_msg:
                                         print("Timeout! Retrying to initiate...")
