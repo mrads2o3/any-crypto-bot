@@ -46,6 +46,10 @@ def waitCountDown(sleepTime):
 
 
 def fraction(token, userid):
+    def tokenExpired():
+        nonlocal token
+        token = input('Token Expired, please input new token: ')
+
     while True:
         try:
             # Get user agents
@@ -61,7 +65,7 @@ def fraction(token, userid):
             response = requests.get(agentUrl, headers=agentHeaders)
             agent = response.json()
             if response.status_code == 401:
-                token = input('Token Expired, please input new token: ')
+                tokenExpired()
             elif response.status_code == 400:
                 print(agent.get('error'))
                 time.sleep(10)
@@ -125,6 +129,8 @@ def fraction(token, userid):
                                         print(f"Session full, getting session in 10 minutes...")
                                         waitCountDown(600)
                                         sessionCheck(userid=userid)
+                                    elif initiate.status_code == 401 and "Invalid token" in err_msg:
+                                        tokenExpired()
                                     elif "timeout" in err_msg:
                                         print("Timeout! Retrying to initiate...")
                                         time.sleep(10)
@@ -144,7 +150,7 @@ def fraction(token, userid):
             print(f"Error occurred, stop running bot: {e}")
 
 def checkUserId(sessionId):
-    url = f"https://dapp-backend-large.fractionai.xyz/api2/session-messages/session/{sessionId}"
+    url = f"https://dapp-backend-large.fractionai.xyz/api3/session-messages/session/{sessionId}"
     header = {
         'Accept': 'application/json',
         'Origin': 'https://dapp.fractionai.xyz',
