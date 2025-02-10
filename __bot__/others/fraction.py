@@ -11,7 +11,8 @@ def sessionCheck(userid):
         sessionHeader = {
             'Accept': 'application/json',
             'Origin': 'https://dapp.fractionai.xyz',
-            'Referer': 'https://dapp.fractionai.xyz/'
+            'Referer': 'https://dapp.fractionai.xyz/',
+            'Allowed-State': 'na'
         }
 
         getSession = requests.get(sessionUrl, headers=sessionHeader)
@@ -46,10 +47,6 @@ def waitCountDown(sleepTime):
 
 
 def fraction(token, userid):
-    def tokenExpired():
-        nonlocal token
-        token = input('Token Expired, please input new token: ')
-
     while True:
         try:
             # Get user agents
@@ -58,14 +55,15 @@ def fraction(token, userid):
                 'Accept': 'application/json',
                 'Authorization': f'Bearer {token}',
                 'Origin': 'https://dapp.fractionai.xyz',
-                'Referer': 'https://dapp.fractionai.xyz/'
+                'Referer': 'https://dapp.fractionai.xyz/',
+                'Allowed-State': 'na'
             }
             ##############################################
             print("Getting agent.....")
             response = requests.get(agentUrl, headers=agentHeaders)
             agent = response.json()
             if response.status_code == 401:
-                tokenExpired()
+                token = input('Token Expired, please input new token: ')
             elif response.status_code == 400:
                 print(agent.get('error'))
                 time.sleep(10)
@@ -91,7 +89,8 @@ def fraction(token, userid):
                                 'Accept': 'application/json',
                                 'Authorization': f'Bearer {token}',
                                 'Origin': 'https://dapp.fractionai.xyz',
-                                'Referer': 'https://dapp.fractionai.xyz/'
+                                'Referer': 'https://dapp.fractionai.xyz/',
+                                'Allowed-State': 'na'
                             }
                             initiateBody = {
                                 "userId": userid,
@@ -130,7 +129,7 @@ def fraction(token, userid):
                                         waitCountDown(600)
                                         sessionCheck(userid=userid)
                                     elif initiate.status_code == 401 and "Invalid token" in err_msg:
-                                        tokenExpired()
+                                        token = input('Token Expired, please input new token: ')
                                     elif "timeout" in err_msg:
                                         print("Timeout! Retrying to initiate...")
                                         time.sleep(10)
@@ -154,7 +153,8 @@ def checkUserId(sessionId):
     header = {
         'Accept': 'application/json',
         'Origin': 'https://dapp.fractionai.xyz',
-        'Referer': 'https://dapp.fractionai.xyz/'
+        'Referer': 'https://dapp.fractionai.xyz/',
+        'Allowed-State': 'na'
     }
 
     response = requests.get(url, headers=header)
