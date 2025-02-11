@@ -7,7 +7,7 @@ import math
 def sessionCheck(userid):
     sessionCheck = True
     while sessionCheck:
-        sessionUrl = f"https://dapp-backend-large.fractionai.xyz/api3/session-types/live-paginated/user/{userid}?pageSize=10&pageNumber=1"
+        sessionUrl = f"https://dapp-backend-4x.fractionai.xyz/api3/session-types/live-paginated/user/{userid}?pageSize=10&pageNumber=1"
         sessionHeader = {
             'Accept': 'application/json',
             'Origin': 'https://dapp.fractionai.xyz',
@@ -50,7 +50,7 @@ def fraction(token, userid):
     while True:
         try:
             # Get user agents
-            agentUrl = f"https://dapp-backend-large.fractionai.xyz/api3/agents/user/{userid}"
+            agentUrl = f"https://dapp-backend-4x.fractionai.xyz/api3/agents/user/{userid}"
             agentHeaders = {
                 'Accept': 'application/json',
                 'Authorization': f'Bearer {token}',
@@ -84,7 +84,7 @@ def fraction(token, userid):
                     for data in agent:
                         if data.get('automationEnabled') == False:
                             # initiate
-                            initiateUrl = "https://dapp-backend-large.fractionai.xyz/api3/matchmaking/initiate"
+                            initiateUrl = "https://dapp-backend-4x.fractionai.xyz/api3/matchmaking/initiate"
                             initiateHeader = {
                                 'Accept': 'application/json',
                                 'Authorization': f'Bearer {token}',
@@ -149,7 +149,7 @@ def fraction(token, userid):
             print(f"Error occurred, stop running bot: {e}")
 
 def checkUserId(sessionId):
-    url = f"https://dapp-backend-large.fractionai.xyz/api3/session-messages/session/{sessionId}"
+    url = f"https://dapp-backend-4x.fractionai.xyz/api3/session-messages/session/{sessionId}"
     header = {
         'Accept': 'application/json',
         'Origin': 'https://dapp.fractionai.xyz',
