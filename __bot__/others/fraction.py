@@ -125,9 +125,9 @@ def fraction(token, userid):
                                         err_loop = False
                                         time.sleep(10)
                                     elif initiate.status_code == 400 and "please try after 60 minutes" in err_msg:
-                                        print(f"Session full, getting session in 10 minutes...")
-                                        waitCountDown(600)
-                                        sessionCheck(userid=userid)
+                                        print(f"Session full, getting session in 61 minutes...")
+                                        waitCountDown(3660)
+                                        # sessionCheck(userid=userid)
                                     elif initiate.status_code == 401 and "Invalid token" in err_msg:
                                         token = input('Token Expired, please input new token: ')
                                     elif "timeout" in err_msg:
