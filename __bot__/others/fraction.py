@@ -83,24 +83,24 @@ def fraction(token, userid):
                     time.sleep(10)
                     for data in agent:
                         if data.get('automationEnabled') == False:
-                            # initiate
-                            initiateUrl = "https://dapp-backend-4x.fractionai.xyz/api3/matchmaking/initiate"
-                            initiateHeader = {
-                                'Accept': 'application/json',
-                                'Authorization': f'Bearer {token}',
-                                'Origin': 'https://dapp.fractionai.xyz',
-                                'Referer': 'https://dapp.fractionai.xyz/',
-                                'Allowed-State': 'na'
-                            }
-                            initiateBody = {
-                                "userId": userid,
-                                "agentId": data.get('id'),
-                                "entryFees": 0.001,
-                                "sessionTypeId": 1
-                            }
-                            ##############################################
                             err_loop = True
                             while err_loop:
+                                # initiate
+                                initiateUrl = "https://dapp-backend-4x.fractionai.xyz/api3/matchmaking/initiate"
+                                initiateHeader = {
+                                    'Accept': 'application/json',
+                                    'Authorization': f'Bearer {token}',
+                                    'Origin': 'https://dapp.fractionai.xyz',
+                                    'Referer': 'https://dapp.fractionai.xyz/',
+                                    'Allowed-State': 'na'
+                                }
+                                initiateBody = {
+                                    "userId": userid,
+                                    "agentId": data.get('id'),
+                                    "entryFees": 0.001,
+                                    "sessionTypeId": 1
+                                }
+                                ##############################################
                                 initiate = requests.post(initiateUrl, headers=initiateHeader, json=initiateBody)
                                 resp = initiate.json()
                                 if initiate.status_code == 200:
@@ -125,8 +125,8 @@ def fraction(token, userid):
                                         err_loop = False
                                         time.sleep(10)
                                     elif initiate.status_code == 400 and "please try after 60 minutes" in err_msg:
-                                        print(f"Session full, getting session in 61 minutes...")
-                                        waitCountDown(3660)
+                                        print(f"Session full, getting session in 1 minutes...")
+                                        waitCountDown(60)
                                         # sessionCheck(userid=userid)
                                     elif initiate.status_code == 401 and "Invalid token" in err_msg:
                                         token = input('Token Expired, please input new token: ')
